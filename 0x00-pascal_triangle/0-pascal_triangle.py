@@ -1,26 +1,27 @@
 #!/usr/bin/python3
 """
-A module that implement the pascals triangle
+This module implements the pascals triangle
 """
 
 
 def pascal_triangle(n):
 
     """
-    The pascal triangle implementation , using list
+    Returns a pascal triangle  , using list
     """
 
     if n <= 0:
         return []
     triangle = [[1]]
     for id in range(n - 1):
-        dat = triangle[-1]
-        lit_sqr = [1]
-        for idx, current in enumerate(dat):
+        row = triangle[-1]
+        list_sqr = [1]
+        for idx, current in enumerate(row):
             try:
-                next = dat[idx + 1]
-                lit_sqr.append(current + next)
+                next = row[idx + 1]
+                list_sqr.append(current + next)
             except Exception:
-                lit_sqr.append(1)
-        triangle.append(lit_sqr)
+                list_sqr.append(1)
+        triangle.append(list_sqr)
     return triangle
+
