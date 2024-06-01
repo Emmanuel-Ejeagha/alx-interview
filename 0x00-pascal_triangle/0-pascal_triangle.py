@@ -24,4 +24,3 @@ def pascal_triangle(n):
                 list_sqr.append(1)
         triangle.append(list_sqr)
     return triangle
-
