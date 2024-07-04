@@ -1,92 +1,73 @@
 #!/usr/bin/python3
-
-"""Learn about the n queens problem and how to solve it"""
+""" N QUEENS ALGORITHM WITH BACKTRACKING (RECURSION INSIDE LOOP) """
 import sys
 
-args = sys.argv
-if len(args) != 2:
-    print("Usage: nqueens N")
-    exit(1)
 
-n = args[1]
+class NQueen:
+    """ Class for solving N Queen Problem """
+
+    def __init__(self, n):
+        """ Global Variables """
+        self.n = n
+        self.x = [0 for i in range(n + 1)]
+        self.res = []
+
+    def place(self, k, i):
+        """ Checks if k Queen can be placed in i column (True)
+        or if the are attacking queens in row or diagonal (False)
+        """
+
+        # j checks from 1 to k - 1 (Up to previous queen)
+        for j in range(1, k):
+            # There is already a queen in column
+            # or a queen in same diagonal
+            if self.x[j] == i or \
+               abs(self.x[j] - i) == abs(j - k):
+                return 0
+        return 1
+
+    def nQueen(self, k):
+        """ Tries to place every queen in the board
+        Args:
+        k: starting queen from which to evaluate (should be 1)
+        """
+        # i goes from column 1 to column n (1st column is 1st index)
+        for i in range(1, self.n + 1):
+            if self.place(k, i):
+                # Queen can be placed in i column
+                self.x[k] = i
+                if k == self.n:
+                    # Placed all 4 Queens (A solution was found)
+                    solution = []
+                    for i in range(1, self.n + 1):
+                        solution.append([i - 1, self.x[i] - 1])
+                    self.res.append(solution)
+                else:
+                    # Need to place more Queens
+                    self.nQueen(k + 1)
+        return self.res
+
+
+# Main
+
+if len(sys.argv) != 2:
+    print("Usage: nqueens N")
+    sys.exit(1)
+
+N = sys.argv[1]
+
 try:
-    N = int(n)
+    N = int(N)
 except ValueError:
     print("N must be a number")
-    exit(1)
+    sys.exit(1)
 
 if N < 4:
     print("N must be at least 4")
-    exit(1)
+    sys.exit(1)
 
-matrix = [[0] * N for _ in range(N)]
+queen = NQueen(N)
+res = queen.nQueen(1)
 
-
-def valid_row(row):
-    """Validate a row that a queen can be placed"""
-    return sum(row) == 0
-
-
-def valid_column(index, matrix):
-    """Validate a column that a queen can be placed"""
-    for row in matrix:
-        if row[index] == 1:
-            return False
-    return True
-
-
-def valid_diagonal(mat, row, col):
-    """Validate a diagonal that a queen can be placed"""
-
-    for m in range(N):
-        if (mat[row][m] == 1) or (mat[m][col] == 1):
-            return False
-
-    for k in range(N):
-        for j in range(N):
-            if (k - j == row - col) or (k + j == row + col):
-                if mat[k][j] == 1:
-                    return False
-    return True
-
-
-def get_index(arr):
-    """Get index of position 1"""
-    i = 0
-    while i < N:
-        if arr[i] == 1:
-            return i
-        i += 1
-    return -1
-
-
-def print_matrix(matrix):
-    """Print the positions of the n queen solution"""
-    index = []
-    for idx, row in enumerate(matrix):
-        index.append([idx, get_index(row)])
-    print(index)
-
-
-def generate_solutions(col, matrix, solutions):
-    """Generate solutions for the N queens problem"""
-    if col >= N:
-        solutions.append([row[:] for row in matrix])
-        return
-
-    for i in range(N):
-        if valid_column(col, matrix) and valid_row(
-                matrix[i]) and valid_diagonal(matrix, i, col):
-
-            matrix[i][col] = 1
-
-            generate_solutions(col + 1, matrix, solutions)
-            matrix[i][col] = 0
-
-
-if __name__ == '__main__':
-    solutions = []
-    generate_solutions(0, matrix, solutions)
-
-    for solution in solutions:
-        print_matrix(solution)
+for i in res:
+    print(i)
